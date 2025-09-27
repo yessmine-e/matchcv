@@ -1,0 +1,119 @@
+{% extends "base.html" %}
+
+{% block title %}Analyse de CV - StageCVMatch{% endblock %}
+
+{% block content %}
+<div class="max-w-xl w-full glass p-8 shadow-lg mx-auto">
+  <h1 class="text-4xl font-extrabold text-white mb-8 text-center drop-shadow-lg">Analyse de CV</h1>
+  
+  <form id="cv-form" class="space-y-6">
+    <input 
+      type="file" 
+      id="cvFile" 
+      name="file" 
+      accept=".pdf,image/*"
+      class="block w-full text-sm text-blue-900 file:mr-4 file:py-2 file:px-4
+             file:rounded-full file:border-0
+             file:text-sm file:font-semibold
+             file:bg-white file:text-blue-600
+             hover:file:bg-blue-100
+             cursor-pointer"
+      required
+    />
+    <button 
+      type="submit" 
+      class="w-full py-3 bg-blue-600 text-white font-bold rounded-full shadow-lg hover:bg-blue-700 transition flex justify-center items-center space-x-2"
+    >
+      <svg id="spinner" class="animate-spin h-5 w-5 mr-2 hidden text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
+      </svg>
+      <span>Analyser</span>
+    </button>
+  </form>
+
+  <div id="results" class="mt-8 space-y-6 text-white"></div>
+
+  <!-- Toast notification -->
+  <div id="toast" class="fixed bottom-6 right-6 bg-red-600 text-white px-4 py-3 rounded shadow-lg opacity-0 pointer-events-none transition-opacity duration-300"></div>
+</div>
+
+<script>
+const form = document.getElementById("cv-form");
+const spinner = document.getElementById("spinner");
+const resultsDiv = document.getElementById("results");
+const toast = document.getElementById("toast");
+const fileInput = document.getElementById("cvFile");
+
+function showToast(message, duration = 3000) {
+  toast.textContent = message;
+  toast.classList.remove("opacity-0", "pointer-events-none");
+  setTimeout(() => {
+    toast.classList.add("opacity-0", "pointer-events-none");
+  }, duration);
+}
+
+form.addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  if (!fileInput.files.length) {
+    alert("Veuillez sélectionner un fichier");
+    return;
+  }
+
+  spinner.classList.remove("hidden");
+  resultsDiv.innerHTML = "";
+
+  const formData = new FormData();
+  formData.append("file", fileInput.files[0]);
+
+  try {
+    const res = await fetch("/match-cv/", { method: "POST", body: formData });
+    if (!res.ok) throw new Error("Erreur serveur, réessayez plus tard.");
+
+    const data = await res.json();
+
+    // Affiche la boite de dialogue avec les résultats JSON
+    alert("Résultats reçus :\n\n" + JSON.stringify(data.results, null, 2));
+
+    if (!data.results.length) {
+      resultsDiv.innerHTML = `<p>Aucun résultat trouvé.</p>`;
+    } else {
+      resultsDiv.innerHTML = "<h2>Résultats :</h2>";
+      data.results.forEach((r, i) => {
+        // Limiter description à 300 caractères
+        const maxLength = 300;
+        let desc = r.job_description || "";
+        if (desc.length > maxLength) {
+          desc = desc.substring(0, maxLength) + "...";
+        }
+
+        resultsDiv.innerHTML += `
+          <div class="p-4 bg-white bg-opacity-10 rounded-md shadow-md">
+            <p class="font-bold text-lg">${i + 1}. ${r.job_title} (score : ${r.score})</p>
+            <p>${desc}</p>
+          </div>
+        `;
+      });
+    }
+  } catch (error) {
+    alert(error.message || "Une erreur est survenue.");
+  } finally {
+    spinner.classList.add("hidden");
+  }
+});
+</script>
+
+<style>
+  @keyframes fadeInUp {
+    0% {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+</style>
+{% endblock %}

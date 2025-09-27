@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>{% block title %}StageCVMatch{% endblock %}</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  
+  <!-- Configuration Tailwind avant le script -->
+  <script>
+    tailwind.config = {
+      darkMode: 'class'
+    }
+  </script>
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    .glass {
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-radius: 1rem;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+  </style>
+</head>
+
+<body class="text-white font-sans min-h-screen flex flex-col">
+
+  <!-- Bouton toggle mode sombre / clair -->
+  <button
+    id="theme-toggle"
+    class="fixed bottom-4 right-4 px-3 py-1 rounded border border-current text-current hover:bg-white hover:text-gray-900 transition
+           dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600 shadow-lg z-50"
+  >
+    Mode sombre
+  </button>
+
+  <!-- Background et contenu dans un div pour gérer bg en mode clair/sombre -->
+  <div class="flex-1 bg-gradient-to-br from-blue-700 via-blue-500 to-blue-400 dark:bg-gray-900 transition-colors duration-500 flex flex-col">
+
+    <!-- Header -->
+    <header class="bg-white/10 p-4 shadow-md backdrop-blur-md flex justify-between items-center text-white">
+      <h1 class="text-xl font-bold">StageCVMatch</h1>
+      <nav class="space-x-4 text-sm">
+        <a href="/" class="hover:underline">Accueil</a>
+        <a href="/login" class="hover:underline">Connexion</a>
+        <a href="/signup" class="hover:underline">Inscription</a>
+        <a href="/recherche" class="text-white hover:underline">🔍 Recherche</a>
+      </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-1 flex items-center justify-center p-6">
+      {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="text-center p-4 text-sm text-white/80">
+      © 2025 StageCVMatch
+    </footer>
+
+  </div>
+
+  <script>
+    const btn = document.getElementById('theme-toggle');
+    btn.addEventListener('click', () => {
+      document.documentElement.classList.toggle('dark');
+      if (document.documentElement.classList.contains('dark')) {
+        btn.textContent = 'Mode clair';
+      } else {
+        btn.textContent = 'Mode sombre';
+      }
+    });
+  </script>
+
+</body>
+</html>

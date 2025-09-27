@@ -1,0 +1,185 @@
+{% extends "base.html" %}
+{% block title %}Inscription - StageCVMatch{% endblock %}
+
+{% block content %}
+<style>
+  /* Fond dégradé animé */
+  @keyframes gradientBG {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+
+  /* Animation légère flottante */
+  @keyframes floatUpDown {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-15px); }
+  }
+
+  /* Animation fadeInUp */
+  @keyframes fadeInUp {
+    0% { opacity: 0; transform: translateY(30px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Full screen & flex centering */
+  body, html {
+    height: 100%;
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+
+  .full-screen-bg {
+    height: 100vh;
+    width: 100vw;
+    background: linear-gradient(270deg, #2563eb, #9333ea, #3b82f6, #8b5cf6);
+    background-size: 800% 800%;
+    animation: gradientBG 20s ease infinite;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem;
+  }
+
+  .container {
+    position: relative;
+    background: rgba(255 255 255 / 0.15);
+    backdrop-filter: blur(15px);
+    border-radius: 2rem;
+    box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
+    max-width: 400px;
+    width: 100%;
+    padding: 3rem 2.5rem;
+    color: #ffffff;
+    animation: fadeInUp 1s ease forwards;
+  }
+
+  h1 {
+    font-size: 2.8rem;
+    font-weight: 900;
+    text-align: center;
+    margin-bottom: 2rem;
+    color: #dbeafe;
+    text-shadow: 0 0 10px rgba(203, 213, 225, 0.8);
+  }
+
+  form input {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    margin-bottom: 1.25rem;
+    border-radius: 9999px;
+    border: none;
+    outline: none;
+    font-size: 1rem;
+    color: #1e293b;
+    box-shadow: inset 0 0 8px rgba(0,0,0,0.1);
+    transition: box-shadow 0.3s ease, transform 0.3s ease;
+  }
+
+  form input:focus {
+    box-shadow: 0 0 15px 3px #93c5fd;
+    transform: scale(1.02);
+  }
+
+  button[type="submit"] {
+    width: 100%;
+    padding: 1rem;
+    font-weight: 700;
+    font-size: 1.2rem;
+    border-radius: 9999px;
+    border: none;
+    background: linear-gradient(45deg, #2563eb, #9333ea);
+    color: white;
+    cursor: pointer;
+    box-shadow: 0 0 15px #2563eb;
+    transition: box-shadow 0.4s ease, transform 0.3s ease, background 0.4s ease;
+  }
+
+  button[type="submit"]:hover {
+    box-shadow: 0 0 30px #9333ea;
+    background: linear-gradient(45deg, #3b82f6, #8b5cf6);
+    transform: scale(1.05);
+  }
+
+  p.error {
+    background-color: rgba(255, 69, 58, 0.8);
+    color: white;
+    font-weight: 700;
+    padding: 0.75rem 1rem;
+    border-radius: 12px;
+    margin-bottom: 1.5rem;
+    text-align: center;
+    box-shadow: 0 0 10px rgba(255, 69, 58, 0.7);
+  }
+
+  p.signup-text {
+    margin-top: 1.5rem;
+    text-align: center;
+    color: #bfdbfe;
+    font-size: 0.9rem;
+  }
+
+  p.signup-text a {
+    color: #dbeafe;
+    font-weight: 700;
+    text-decoration: underline;
+    transition: color 0.3s ease;
+  }
+
+  p.signup-text a:hover {
+    color: #fbbf24;
+  }
+
+  /* Formes abstraites */
+  .circle1, .circle2 {
+    position: absolute;
+    border-radius: 50%;
+    opacity: 0.15;
+    filter: blur(60px);
+    animation: floatUpDown 6s ease-in-out infinite;
+    z-index: -1;
+  }
+
+  .circle1 {
+    width: 250px;
+    height: 250px;
+    background: #3b82f6;
+    top: -60px;
+    left: -60px;
+  }
+
+  .circle2 {
+    width: 180px;
+    height: 180px;
+    background: #8b5cf6;
+    bottom: -50px;
+    right: -50px;
+    animation-delay: 3s;
+  }
+</style>
+
+<div class="full-screen-bg">
+  <div class="container">
+    <div class="circle1"></div>
+    <div class="circle2"></div>
+
+    <h1>Inscription</h1>
+
+    {% if error %}
+      <p class="error">{{ error }}</p>
+    {% endif %}
+
+    <form method="post" class="space-y-4" autocomplete="off">
+      <input type="email" name="email" placeholder="Email" required />
+      <input type="password" name="password" placeholder="Mot de passe" required />
+      <input type="password" name="password2" placeholder="Confirmer le mot de passe" required />
+      <button type="submit">S'inscrire</button>
+    </form>
+
+    <p class="signup-text">
+      Déjà un compte ?
+      <a href="/login">Connexion</a>
+    </p>
+  </div>
+</div>
+{% endblock %}

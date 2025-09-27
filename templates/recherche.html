@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block title %}Recherche d'offres - CVMatch{% endblock %}
+
+{% block content %}
+<div class="max-w-3xl mx-auto bg-white p-6 rounded shadow-lg">
+
+  <h1 class="text-3xl font-bold mb-6 text-blue-700 text-center">Recherche d'offres</h1>
+
+  <form method="post" class="space-y-4 mb-6">
+    <input type="text" name="keyword" placeholder="Mot-clé (ex : Python, stage, analyse...)"
+           value="{{ keyword }}"
+           class="w-full px-4 py-2 border rounded text-black">
+
+    <select name="domaine" class="w-full px-4 py-2 border rounded text-black">
+      <option value="">-- Tous les domaines --</option>
+      {% for d in domaines %}
+        <option value="{{ d }}" {% if d == selected_domaine %}selected{% endif %}>{{ d }}</option>
+      {% endfor %}
+    </select>
+
+    <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition">🔍 Rechercher</button>
+  </form>
+
+  {% if results %}
+    <h2 class="text-xl font-semibold mb-4">Résultats trouvés : {{ results | length }}</h2>
+    <ul class="space-y-4">
+      {% for r in results %}
+        <li class="border p-4 rounded hover:bg-blue-50 transition">
+          <h3 class="font-bold text-blue-800">{{ r.job_title }}</h3>
+          <p class="text-sm text-gray-600 mb-1"><strong>Domaine :</strong> {{ r.domaine }} | <strong>Lieu :</strong> {{ r.location }}</p>
+         <p class="text-sm text-black leading-relaxed">{{ r.job_description }}</p>
+
+          {% if r.salary %}
+          <p class="text-sm text-green-600 mt-1"><strong>Salaire :</strong> {{ r.salary }}</p>
+          {% endif %}
+        </li>
+      {% endfor %}
+    </ul>
+  {% elif keyword or selected_domaine %}
+    <p class="text-center text-red-600 font-semibold">Aucune offre trouvée avec vos critères.</p>
+  {% endif %}
+
+</div>
+{% endblock %}
